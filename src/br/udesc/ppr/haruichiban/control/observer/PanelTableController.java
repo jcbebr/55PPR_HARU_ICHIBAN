@@ -20,5 +20,5 @@ public interface PanelTableController {
     void addObservador(PanelTableObserver obs);
 
     void removerObservador(PanelTableObserver obs);
-
+    
 }

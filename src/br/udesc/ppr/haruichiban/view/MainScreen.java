@@ -2,7 +2,6 @@ package br.udesc.ppr.haruichiban.view;
 
 import br.udesc.ppr.haruichiban.control.observer.MainScreenObserver;
 import br.udesc.ppr.haruichiban.control.observer.GameController;
-import br.udesc.ppr.haruichiban.control.observer.PointsController;
 import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.event.MouseAdapter;
@@ -46,12 +45,12 @@ public class MainScreen extends JFrame implements MainScreenObserver {
         contentPane.add(new Board(GameController.getInstance().getBoardController()));
         contentPane.add(new YellowHand(GameController.getInstance().getYellowHandController()));
         contentPane.add(new RedHand(GameController.getInstance().getRedHandController()));
-        contentPane.add(new Points(new PointsController()));
+        contentPane.add(new Points(GameController.getInstance().getPointsController()));
         
         lbRoundInfo = addLabel(400, 20, 70, 200, 15);
-        lbRoundInfo.setText(GameController.getInstance().getGameFlow().getName());
+        lbRoundInfo.setText(GameController.getInstance().getStage().getName());
         lbDetailInfo = addLabel(500, 50, 80, 230, 15);
-        lbDetailInfo.setText(GameController.getInstance().getGameFlow().getInfo());
+        lbDetailInfo.setText(GameController.getInstance().getStage().getInfo());
         lbNewGame = addLabel(200, 40, 50, 670, 30);
         lbNewGame.setText("Novo jogo");
         lbNewGame.addMouseListener(newGameMouseListener());
@@ -75,7 +74,7 @@ public class MainScreen extends JFrame implements MainScreenObserver {
     }
 
     @Override
-    public void notifyNextRound(String round, String info) {
+    public void notifyNextRoundStep(String round, String info) {
         lbRoundInfo.setText(round);
         lbDetailInfo.setText(info);
     }
@@ -83,6 +82,16 @@ public class MainScreen extends JFrame implements MainScreenObserver {
     @Override
     public void notifyEmptyDesck(String deck) {
         JOptionPane.showMessageDialog(this, "O baralho " + deck + " está vazio", "Erro", JOptionPane.ERROR_MESSAGE);
+    }
+
+    @Override
+    public void notifyNextRound(String winner) {
+        JOptionPane.showMessageDialog(this, "Fim da rodada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    @Override
+    public void notifyGameOver(String winner){
+        JOptionPane.showMessageDialog(this, "Gameober", "Aviso", JOptionPane.INFORMATION_MESSAGE);
     }
     
     private MouseListener newGameMouseListener() {

@@ -34,7 +34,7 @@ public class EasyBuilder extends Builder {
 
     @Override
     public void buildDarkNenuphar() {
-        this.board.setDarkNenuphar(1, 3);
+        this.board.setDarkNenuphar(1, 3, true);
     }
 
     @Override

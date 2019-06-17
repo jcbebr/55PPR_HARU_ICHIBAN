@@ -24,10 +24,10 @@ public class Board {
         return cards[row][column];
     }
 
-    public int getSize(){
+    public int getSize() {
         return cards.length;
     }
-    
+
     public void setBoard(Card[][] cards) {
         this.cards = cards;
     }
@@ -48,18 +48,26 @@ public class Board {
         cards[row][column] = new BrightNenupharYellowFlower();
     }
 
-    public void setDarkNenuphar(int row, int column) {
-        cards[row][column] = new DarkNenuphar();
+    public void setDarkNenuphar(int row, int column, boolean father) {
+        cards[row][column] = new DarkNenuphar(father);
     }
 
     public void setDarkNenupharYellowFlower(int row, int column) {
-        cards[row][column] = new DarkNenupharYellowFlower();
+        if (cards[row][column] == null) {
+            cards[row][column] = new DarkNenupharYellowFlower(false);
+        } else {
+            cards[row][column] = new DarkNenupharYellowFlower(((DarkNenuphar)cards[row][column]).isFather());
+        }
     }
 
     public void setDarkNenupharRedFlower(int row, int column) {
-        cards[row][column] = new DarkNenupharRedFlower();
+        if (cards[row][column] == null) {
+            cards[row][column] = new DarkNenupharRedFlower(false);
+        } else {
+            cards[row][column] = new DarkNenupharRedFlower(((DarkNenuphar)cards[row][column]).isFather());
+        }
     }
-    
+
     public void setRedFrog(int row, int column) {
         cards[row][column] = new BrightNenupharRedFrog();
     }

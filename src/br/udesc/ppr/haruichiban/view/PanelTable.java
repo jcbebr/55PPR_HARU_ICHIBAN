@@ -114,7 +114,6 @@ public abstract class PanelTable extends JPanel implements PanelTableObserver {
         table.setShowGrid(false);
         table.setIntercellSpacing(new Dimension(0, 0));
         table.setDefaultRenderer(Object.class, new PanelTableRenderer());
-        //table.setVisible(true);
         table.setOpaque(false);
         ((DefaultTableCellRenderer) table.getDefaultRenderer(Object.class)).setOpaque(false);
 
@@ -143,4 +142,7 @@ public abstract class PanelTable extends JPanel implements PanelTableObserver {
         gardener.setText(name);
     }
 
+    @Override
+    public void not() {
+    }
 }

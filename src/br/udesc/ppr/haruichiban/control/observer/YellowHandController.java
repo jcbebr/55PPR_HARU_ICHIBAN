@@ -1,6 +1,6 @@
 package br.udesc.ppr.haruichiban.control.observer;
 
-import br.udesc.ppr.haruichiban.model.GameFlow;
+import br.udesc.ppr.haruichiban.control.stage.GameStage01;
 import java.util.ArrayList;
 import java.util.List;
 import br.udesc.ppr.haruichiban.model.Deck;
@@ -25,19 +25,30 @@ public class YellowHandController implements PanelTableController {
         this.obss = new ArrayList<>();
         this.deck = new YellowDeck();
         this.selectedCard = -1;
+        for (PanelTableObserver obs : obss) {
+            obs.notifyChangedGardeners("");
+        }
     }
 
     public Deck getDeck() {
         return deck;
     }
+    
+    public void resetDeck(){
+        deck = new YellowDeck();
+    }
 
     public void reserveSelectedCard() {
         deck.reserveCard(selectedCard);
-        selectedCard = -1;
+        unselectCard();
     }
 
     public void removeSelectedCard() {
         deck.removeCard(selectedCard);
+        unselectCard();
+    }
+    
+    public void unselectCard() {
         selectedCard = -1;
     }
 
@@ -68,7 +79,7 @@ public class YellowHandController implements PanelTableController {
 
     @Override
     public Card getValueAt(int row, int column, boolean selected) {
-        if ((selected) && (GameController.getInstance().getGameFlow().equals(GameFlow.STAGE01))) {
+        if ((selected) && (GameController.getInstance().getStage().getClass().equals(GameStage01.class))) {
             try {
                 return (Card) deck.getFlowerAt(column);
             } catch (IndexOutOfBoundsException e) {
@@ -96,7 +107,8 @@ public class YellowHandController implements PanelTableController {
 
     @Override
     public void clickCell(int row, int column) {
-        if (GameController.getInstance().getGameFlow().equals(GameFlow.STAGE01) && selectedCard == -1) {
+        if (GameController.getInstance().getStage().getClass().equals(GameStage01.class) 
+                && selectedCard == -1) {
             selectedCard = column;
             GameController.getInstance().nextGameFlow();
         }
