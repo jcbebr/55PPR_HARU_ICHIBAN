@@ -1,5 +1,6 @@
 package br.udesc.ppr.haruichiban.control.builder;
 
+import br.udesc.ppr.haruichiban.control.visitor.Visitor;
 import br.udesc.ppr.haruichiban.model.card.Card;
 import br.udesc.ppr.haruichiban.model.card.Water;
 import br.udesc.ppr.haruichiban.model.card.nenuphar.*;
@@ -10,6 +11,14 @@ import br.udesc.ppr.haruichiban.model.card.nenuphar.*;
  */
 public class Board {
 
+    public void accept(Visitor visitor) throws Exception {
+        for (int i = 0; i < getSize(); i++) {
+            for (int j = 0; j < getSize(); j++) {
+                get(i, j).accept(visitor);
+            }
+        }
+    }
+    
     private Card[][] cards;
 
     public Board() {

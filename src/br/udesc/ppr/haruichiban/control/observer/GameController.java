@@ -141,7 +141,7 @@ public class GameController implements Observed {
             redHandController.setGardener(Gardeners.JUNIOR);
             yellowHandController.setGardener(Gardeners.SENIOR);
         }
-        if (boardController.checkNFlowers()) {
+        if (boardController.checkBoard(2)) {
             nextGameFlow();
             nextGameFlow();
         }

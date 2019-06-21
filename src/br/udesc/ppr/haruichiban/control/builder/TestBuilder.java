@@ -21,12 +21,12 @@ public class TestBuilder extends Builder {
         this.board.setWater(2, 4);
         this.board.setWater(3, 0);
         this.board.setWater(3, 1);
-        this.board.setWater(3, 2);
-        this.board.setYellowFrog(3, 3);
-        this.board.setRedFrog(3, 4);
-        this.board.setDarkNenuphar(4, 0);
-        this.board.setBrightNenupharRedFlower(4, 1);
-        this.board.setBrightNenupharRedFlower(4, 2);
+        this.board.setBrightNenuphar(3, 2);
+        this.board.setDarkNenuphar(3, 3);
+        this.board.setBrightNenupharRedFlower(3, 4);
+        this.board.setWater(4, 0);
+        this.board.setRedFrog(4, 1);
+        this.board.setYellowFrog(4, 2);
         this.board.setBrightNenupharRedFlower(4, 3);
         this.board.setBrightNenupharRedFlower(4, 4);
     }

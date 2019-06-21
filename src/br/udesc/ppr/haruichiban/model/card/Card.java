@@ -1,5 +1,6 @@
 package br.udesc.ppr.haruichiban.model.card;
 
+import br.udesc.ppr.haruichiban.control.visitor.Visitor;
 import javax.swing.ImageIcon;
 
 /**
@@ -23,6 +24,10 @@ public abstract class Card {
 
     public Class getName() {
         return name;
+    }
+
+    public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
     
 }

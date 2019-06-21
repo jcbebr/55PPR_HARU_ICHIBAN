@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import br.udesc.ppr.haruichiban.control.builder.*;
 import br.udesc.ppr.haruichiban.control.command.*;
+import br.udesc.ppr.haruichiban.control.visitor.CountNenupharVisitor;
 import br.udesc.ppr.haruichiban.model.card.*;
 import br.udesc.ppr.haruichiban.model.card.nenuphar.*;
 
@@ -137,9 +138,9 @@ public class BoardController implements PanelTableController {
         return false;
     }
 
-    private boolean isEquals(Class c, Class c1, Class c2) {
-        return c.equals(c1) || c.equals(c2);
-    }
+    /*private boolean isEquals(Class c, Class c1, Class c2) {
+    return c.equals(c1) || c.equals(c2);
+    }*/
 
     private boolean hasRoundWinner() {
         int r = 0;
@@ -231,23 +232,21 @@ public class BoardController implements PanelTableController {
             GameController.getInstance().getPointsController().addYellowPoints(y);
             if (GameController.getInstance().getPointsController().hasSingleWinner()) {
                 GameController.getInstance().gameOver();
-            }
+            } 
             GameController.getInstance().nextRound();
             return true;
         }
         return false;
     }
 
-    public boolean checkNFlowers() {
-        int n = 0;
-        for (int i = 0; i < board.getSize(); i++) {
-            for (int j = 0; j < board.getSize(); j++) {
-                if (isEquals(board.get(i, j).getClass(), BrightNenuphar.class, DarkNenuphar.class)) {
-                    n++;
-                }
-            }
+    public boolean checkBoard(int num) {
+        CountNenupharVisitor v = new CountNenupharVisitor();
+        try {
+            board.accept(v);
+        } catch (Exception ex) {
+            System.out.println("Error [checkBoard]");
         }
-        return n <= 2;
+        return v.getValue() <= num;
     }
 
     public void afterDraw() {
