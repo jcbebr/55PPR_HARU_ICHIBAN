@@ -2,19 +2,17 @@ package br.udesc.ppr.haruichiban.view;
 
 import br.udesc.ppr.haruichiban.control.observer.PanelTableController;
 import br.udesc.ppr.haruichiban.control.observer.PanelTableObserver;
-import br.udesc.ppr.haruichiban.control.observer.PointsController;
+import br.udesc.ppr.haruichiban.view.decorator.BigSizeHFontDecorator;
+import br.udesc.ppr.haruichiban.view.decorator.BoldHFontDecorator;
+import br.udesc.ppr.haruichiban.view.decorator.ConsolasSimpleHFont;
+import br.udesc.ppr.haruichiban.view.decorator.ItalicHFontDecorator;
+import br.udesc.ppr.haruichiban.view.decorator.NormalSizeHFontDecorator;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
@@ -26,106 +24,41 @@ public abstract class PanelTable extends JPanel implements PanelTableObserver {
 
     protected final JTable table;
     private final JLabel gardener;
-    protected int cellSize = 64; //pixels
     private PanelTableController controller;
-    private Boolean selected = false;
-
-    private class PanelTableRenderer extends DefaultTableCellRenderer {
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
-            setIcon((ImageIcon) value);
-            setSize(cellSize, cellSize);
-            return this;
-        }
-    }
-
-    /**
-     *
-     * @author José Carlos Bernardes Brümmer
-     * @date 20/04/2019
-     */
-    private class PanelTableModel extends AbstractTableModel {
-
-        @Override
-        public int getRowCount() {
-            return controller.getRowCount();
-        }
-
-        @Override
-        public int getColumnCount() {
-            return controller.getColumnCount();
-        }
-
-        @Override
-        public ImageIcon getValueAt(int row, int column) {
-            return new ImageIcon(controller.getValueAt(row, column, selected).getImage().getImage().getScaledInstance(cellSize, cellSize, java.awt.Image.SCALE_SMOOTH));
-        }
-    }
-
-    /**
-     *
-     */
-    private class PanelTableMouseListener extends MouseAdapter {
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            controller.clickCell(table.rowAtPoint(e.getPoint()), table.columnAtPoint(e.getPoint()));
-            table.repaint();
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            selected = true;
-            table.repaint();
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-            selected = false;
-            table.repaint();
-        }
-    }
 
     public PanelTable(PanelTableController controller, int x, int y) {
         this.controller = controller;
         this.controller.addObservador(this);
-
-        if (controller.getClass().equals(PointsController.class)) {
-            cellSize = 35;
-        }
+        PanelTableUtils paUtils = new PanelTableUtils(this, controller);
 
         gardener = new JLabel();
         gardener.setForeground(Color.WHITE);
-        gardener.setFont(new Font("Consolas", 1, 15));
+        gardener.setFont(new BigSizeHFontDecorator(new ItalicHFontDecorator(new ConsolasSimpleHFont())).getFont());
 
-        table = new JTable(new PanelTableModel());
+        table = new JTable(paUtils.getPanelTableModel());
 
         for (int i = 0; i < table.getColumnModel().getColumnCount(); i++) {
-            table.getColumnModel().getColumn(i).setWidth(cellSize);
-            table.getColumnModel().getColumn(i).setMinWidth(cellSize);
-            table.getColumnModel().getColumn(i).setMaxWidth(cellSize);
+            table.getColumnModel().getColumn(i).setWidth(paUtils.getCellSize());
+            table.getColumnModel().getColumn(i).setMinWidth(paUtils.getCellSize());
+            table.getColumnModel().getColumn(i).setMaxWidth(paUtils.getCellSize());
         }
-        table.setRowHeight(cellSize);
+        table.setRowHeight(paUtils.getCellSize());
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setShowGrid(false);
         table.setIntercellSpacing(new Dimension(0, 0));
-        table.setDefaultRenderer(Object.class, new PanelTableRenderer());
+        table.setDefaultRenderer(Object.class, paUtils.getPanelTableRenderer());
         table.setOpaque(false);
         ((DefaultTableCellRenderer) table.getDefaultRenderer(Object.class)).setOpaque(false);
 
-        table.setSize(cellSize * table.getColumnModel().getColumnCount(),
-                cellSize * table.getColumnModel().getColumnCount());
+        table.setSize(paUtils.getCellSize() * table.getColumnModel().getColumnCount(),
+                paUtils.getCellSize() * table.getColumnModel().getColumnCount());
 
-        table.addMouseListener(new PanelTableMouseListener());
+        table.addMouseListener(paUtils.getPanelTableMouseListener());
 
         super.add(table);
         super.setLocation(x, y);
-        super.setSize(cellSize * table.getColumnModel().getColumnCount(),
-                cellSize * table.getColumnModel().getColumnCount() + 5);
+        super.setSize(paUtils.getCellSize() * table.getColumnModel().getColumnCount(),
+                paUtils.getCellSize() * table.getColumnModel().getColumnCount() + 5);
         super.setOpaque(false);
 
         super.add(gardener);
@@ -142,7 +75,4 @@ public abstract class PanelTable extends JPanel implements PanelTableObserver {
         gardener.setText(name);
     }
 
-    @Override
-    public void not() {
-    }
 }

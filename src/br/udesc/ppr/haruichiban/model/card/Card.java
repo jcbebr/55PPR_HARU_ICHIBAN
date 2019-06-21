@@ -10,12 +10,19 @@ public abstract class Card {
 
     private final ImageIcon image;
 
-    public Card(String imageName) {
+    public Card(String imageName, Class name) {
         this.image = new ImageIcon("images/" + imageName + ".png");
+        this.name = name;
     }
 
     public ImageIcon getImage() {
         return image;
     }
 
+    private final Class name;
+
+    public Class getName() {
+        return name;
+    }
+    
 }

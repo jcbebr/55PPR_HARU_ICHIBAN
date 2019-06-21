@@ -1,5 +1,6 @@
 package br.udesc.ppr.haruichiban.control.observer;
 
+import br.udesc.ppr.haruichiban.control.stage.GameStage01;
 import br.udesc.ppr.haruichiban.control.stage.GameStage02;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +88,8 @@ public class RedHandController implements PanelTableController {
 
     @Override
     public Card getValueAt(int row, int column, boolean selected) {
-        if ((selected) && (GameController.getInstance().getStage().getClass().equals(GameStage02.class))) {
+        if ((selected) && ((GameController.getInstance().getStage().getClass().equals(GameStage02.class)) 
+                || (GameController.getInstance().getStage().getClass().equals(GameStage01.class))))/*retirar*/{
             try {
                 return (Card) deck.getFlowerAt(column);
             } catch (IndexOutOfBoundsException e) {

@@ -9,7 +9,7 @@ package br.udesc.ppr.haruichiban.model.card;
 public class SelectionIndicator extends Card{
 
     public SelectionIndicator() {
-        super("SelectionIndicator");
+        super("SelectionIndicator", SelectionIndicator.class);
     }
 
 }

@@ -1,5 +1,6 @@
 package br.udesc.ppr.haruichiban.model.card;
 
+
 /**
  *
  * @author José Carlos Bernardes Brümmer
@@ -8,7 +9,11 @@ package br.udesc.ppr.haruichiban.model.card;
 public class Water extends Card {
 
     public Water() {
-        super("");
+        super("", Water.class);
+    }
+
+    public Water(Class name) {
+        super("", name);
     }
 
 }

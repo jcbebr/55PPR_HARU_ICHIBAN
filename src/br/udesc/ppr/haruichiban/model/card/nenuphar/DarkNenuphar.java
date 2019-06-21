@@ -7,20 +7,12 @@ package br.udesc.ppr.haruichiban.model.card.nenuphar;
  */
 public class DarkNenuphar extends Nenuphar {
 
-    private boolean father;
-
-    public boolean isFather() {
-        return father;
-    }
-    
-    public DarkNenuphar(boolean father) {
-        super("DarkNenuphar");
-        this.father = father;
+    public DarkNenuphar(Class name) {
+        super("DarkNenuphar", name);
     }
 
-    public DarkNenuphar(String imageName, boolean father) {
-        super(imageName);
-        this.father = father;
+    public DarkNenuphar(String imageName, Class name) {
+        super(imageName, name);
     }
 
 }

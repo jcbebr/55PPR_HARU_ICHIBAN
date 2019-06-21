@@ -4,8 +4,8 @@ import br.udesc.ppr.haruichiban.model.card.Card;
 
 public abstract class Nenuphar extends Card {
 
-    public Nenuphar(String imageName) {
-        super(imageName);
+    public Nenuphar(String imageName, Class name) {
+        super(imageName, name);
     }
 
 }

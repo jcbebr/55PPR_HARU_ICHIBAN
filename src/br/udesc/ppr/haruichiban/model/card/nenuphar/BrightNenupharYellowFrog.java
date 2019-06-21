@@ -7,8 +7,8 @@ package br.udesc.ppr.haruichiban.model.card.nenuphar;
  */
 public class BrightNenupharYellowFrog extends BrightNenuphar {
 
-    public BrightNenupharYellowFrog() {
-        super("BrightNenupharYellowFrog");
+    public BrightNenupharYellowFrog(Class name) {
+        super("BrightNenupharYellowFrog", name);
     }
 
 }

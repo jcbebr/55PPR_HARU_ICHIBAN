@@ -10,7 +10,7 @@ import br.udesc.ppr.haruichiban.model.card.Card;
 public class RedFlower04 extends Card implements RedFlower {
 
     public RedFlower04() {
-        super("RedFlower04");
+        super("RedFlower04", RedFlower.class);
     }
 
     @Override

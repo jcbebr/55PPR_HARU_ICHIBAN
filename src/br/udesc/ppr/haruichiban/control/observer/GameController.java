@@ -1,5 +1,6 @@
 package br.udesc.ppr.haruichiban.control.observer;
 
+import br.udesc.ppr.haruichiban.control.stage.GameOverStage;
 import br.udesc.ppr.haruichiban.control.stage.GameStage;
 import br.udesc.ppr.haruichiban.control.stage.GameStage01;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class GameController implements Observed {
     private YellowHandController yellowHandController;
     private BoardController boardController;
     private PointsController pointsController;
+    private String drawWinner;
 
     private GameController() {
         this.stage = new GameStage01(this);
@@ -51,10 +53,10 @@ public class GameController implements Observed {
         return stage;
     }
 
-    public void doStage(BoardController b){
+    public void doStage(BoardController b) {
         stage.doStage(b);
     }
-    
+
     public void nextGameFlow() {
         stage.nextStage();
         System.out.println(stage.getClass().toString());
@@ -106,10 +108,9 @@ public class GameController implements Observed {
         setStage(new GameStage01(this));
         redHandController.resetDeck();
         redHandController.removeGardener();
-        redHandController.unselectCard();
         yellowHandController.resetDeck();
         yellowHandController.removeGardener();
-        yellowHandController.unselectCard();
+        unselectCards();
         boardController.nextRound();
         for (Observer obs : obss) {
             ((MainScreenObserver) obs).notifyNextRoundStep(stage.getName(), stage.getInfo());
@@ -118,12 +119,33 @@ public class GameController implements Observed {
             ((MainScreenObserver) obs).notifyNextRound("");
         }
     }
+    
+    public void unselectCards(){
+        redHandController.unselectCard();
+        yellowHandController.unselectCard();
+    }
 
     public void gameOver() {
-
+        setStage(new GameOverStage(this));
         for (Observer obs : obss) {
             ((MainScreenObserver) obs).notifyGameOver("Fim do jogo, parabéns jogador " + pointsController.getWinner());
         }
+    }
+
+    public void setDrawWinner(String drawWinner) {
+        this.drawWinner = drawWinner;
+        if (drawWinner.equals("Vermelho")) {
+            redHandController.setGardener(Gardeners.SENIOR);
+            yellowHandController.setGardener(Gardeners.JUNIOR);
+        } else {
+            redHandController.setGardener(Gardeners.JUNIOR);
+            yellowHandController.setGardener(Gardeners.SENIOR);
+        }
+        if (boardController.checkNFlowers()) {
+            nextGameFlow();
+            nextGameFlow();
+        }
+        nextGameFlow();
     }
 
 }

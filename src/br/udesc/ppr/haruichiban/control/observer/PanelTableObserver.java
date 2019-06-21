@@ -6,5 +6,4 @@ public interface PanelTableObserver extends Observer {
 
     void notifyChangedGardeners(String name);
 
-    void not();
 }

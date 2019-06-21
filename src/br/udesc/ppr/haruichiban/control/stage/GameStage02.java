@@ -34,18 +34,14 @@ public class GameStage02 extends GameStage {
                 draw = true;
             }
             if (draw) {
-                GameStage01 stage = new GameStage01(controller);
-                if (!stage.getInfo().contains("Empate")) {
-                    stage.info = "Empate - " + stage.info + " novamente";
-                }
+                Draw01GameStage stage = new Draw01GameStage(controller);
                 controller.setStage(stage);
-                controller.getRedHandController().reserveSelectedCard();
-                controller.getYellowHandController().reserveSelectedCard();
+                controller.getBoardController().afterDraw();
             } else {
                 controller.setStage(new GameStage03(controller));
-                controller.getRedHandController().removeSelectedCard();
-                controller.getYellowHandController().removeSelectedCard();
             }
+            controller.getRedHandController().removeSelectedCard();
+            controller.getYellowHandController().removeSelectedCard();
         } catch (IndexOutOfBoundsException e) {
             for (Observer obs : controller.getObss()) {
                 ((MainScreenObserver) obs).notifyEmptyDesck(e.getMessage());
@@ -55,7 +51,6 @@ public class GameStage02 extends GameStage {
 
     @Override
     public void doStage(BoardController b) {
-
     }
 
 }

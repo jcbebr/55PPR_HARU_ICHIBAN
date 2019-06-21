@@ -7,12 +7,12 @@ package br.udesc.ppr.haruichiban.model.card.nenuphar;
  */
 public class BrightNenuphar extends Nenuphar {
 
-    public BrightNenuphar() {
-        super("BrightNenuphar");
+    public BrightNenuphar(Class name) {
+        super("BrightNenuphar", name);
     }
 
-    public BrightNenuphar(String imageName) {
-        super(imageName);
+    public BrightNenuphar(String imageName, Class name) {
+        super(imageName, name);
     }
 
 }

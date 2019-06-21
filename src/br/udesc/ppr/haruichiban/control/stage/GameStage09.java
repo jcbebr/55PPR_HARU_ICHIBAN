@@ -20,8 +20,8 @@ public class GameStage09 extends GameStage {
     public void nextStage() {
         controller.getRedHandController().removeGardener();
         controller.getYellowHandController().removeGardener();
-        //gameFlow = GameFlow.STAGE01;
         controller.setStage(new GameStage01(controller));
+        controller.unselectCards();
         if (controller.getRedHandController().getDeck().isEmpty()
                 || controller.getYellowHandController().getDeck().isEmpty()) {
             controller.nextRound();

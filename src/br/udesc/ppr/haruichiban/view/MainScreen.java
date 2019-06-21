@@ -2,11 +2,17 @@ package br.udesc.ppr.haruichiban.view;
 
 import br.udesc.ppr.haruichiban.control.observer.MainScreenObserver;
 import br.udesc.ppr.haruichiban.control.observer.GameController;
+import br.udesc.ppr.haruichiban.control.stage.Draw01GameStage;
+import br.udesc.ppr.haruichiban.view.decorator.BoldHFontDecorator;
+import br.udesc.ppr.haruichiban.view.decorator.LucidaSansSimpleHFont;
+import br.udesc.ppr.haruichiban.view.decorator.NormalSizeHFontDecorator;
 import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -24,6 +30,7 @@ public class MainScreen extends JFrame implements MainScreenObserver {
     private JTextArea lbRoundInfo;
     private JTextArea lbDetailInfo;
     private JTextArea lbNewGame;
+    private JTextArea lbCroak;
 
     public MainScreen() throws HeadlessException {
         super("55PPR - Haru Ichiban");
@@ -46,30 +53,31 @@ public class MainScreen extends JFrame implements MainScreenObserver {
         contentPane.add(new YellowHand(GameController.getInstance().getYellowHandController()));
         contentPane.add(new RedHand(GameController.getInstance().getRedHandController()));
         contentPane.add(new Points(GameController.getInstance().getPointsController()));
-        
-        lbRoundInfo = addLabel(400, 20, 70, 200, 15);
-        lbRoundInfo.setText(GameController.getInstance().getStage().getName());
-        lbDetailInfo = addLabel(500, 50, 80, 230, 15);
-        lbDetailInfo.setText(GameController.getInstance().getStage().getInfo());
-        lbNewGame = addLabel(200, 40, 50, 670, 30);
-        lbNewGame.setText("Novo jogo");
+
+        lbRoundInfo = addTextArea(400, 20, 70, 200, GameController.getInstance().getStage().getName());
+        lbDetailInfo = addTextArea(500, 50, 80, 230, GameController.getInstance().getStage().getInfo());
+        lbNewGame = addTextArea(200, 40, 50, 670, "Novo jogo");
         lbNewGame.addMouseListener(newGameMouseListener());
+        lbCroak = addTextArea(100, 130, 1070, 355, "Coaxar");
+        lbCroak.addMouseListener(croakMouseListener());
 
         contentPane.add(lbRoundInfo);
         contentPane.add(lbDetailInfo);
         contentPane.add(lbNewGame);
+        contentPane.add(lbCroak);
 
         pack();
     }
 
-    private JTextArea addLabel(int sizeX, int sizeY, int posX, int posY, int fontSize) {
+    private JTextArea addTextArea(int sizeX, int sizeY, int posX, int posY, String... text) {
         JTextArea textArea = new JTextArea("");
         textArea.setSize(sizeX, sizeY);
         textArea.setLocation(posX, posY);
         textArea.setVisible(true);
-        textArea.setFont(new Font("Lucida Sans", 1, fontSize));
+        textArea.setFont(new BoldHFontDecorator(new NormalSizeHFontDecorator(new LucidaSansSimpleHFont())).getFont());
         textArea.setEditable(false);
         textArea.setOpaque(false);
+        textArea.setText(text[0]);
         return textArea;
     }
 
@@ -88,12 +96,12 @@ public class MainScreen extends JFrame implements MainScreenObserver {
     public void notifyNextRound(String winner) {
         JOptionPane.showMessageDialog(this, "Fim da rodada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
     }
-    
+
     @Override
-    public void notifyGameOver(String winner){
-        JOptionPane.showMessageDialog(this, "Gameober", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+    public void notifyGameOver(String winner) {
+        JOptionPane.showMessageDialog(this, "Gameover", "Aviso", JOptionPane.INFORMATION_MESSAGE);
     }
-    
+
     private MouseListener newGameMouseListener() {
         return new MouseAdapter() {
             @Override
@@ -104,5 +112,18 @@ public class MainScreen extends JFrame implements MainScreenObserver {
             }
         };
     }
-    
+
+    private MouseListener croakMouseListener() {
+        return new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (GameController.getInstance().getStage().getClass().equals(Draw01GameStage.class)) {
+                    GameController.getInstance().setDrawWinner(((String) JOptionPane.showInputDialog(
+                            null, "Jogador que coachou primeiro:", "Selecione", 1, new ImageIcon(),
+                            new String[]{"Amarelo", "Vermelho"}, "")));
+                }
+            }
+        };
+    }
+
 }

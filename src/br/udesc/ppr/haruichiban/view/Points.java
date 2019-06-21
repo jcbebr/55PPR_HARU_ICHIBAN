@@ -18,9 +18,5 @@ public class Points extends PanelTable {
         });
     }
 
-    @Override
-    public void not() {
-
-    }
 
 }

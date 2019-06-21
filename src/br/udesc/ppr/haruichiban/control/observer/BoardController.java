@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import br.udesc.ppr.haruichiban.control.builder.*;
 import br.udesc.ppr.haruichiban.control.command.*;
-import br.udesc.ppr.haruichiban.control.stage.GameStage02;
 import br.udesc.ppr.haruichiban.model.card.*;
 import br.udesc.ppr.haruichiban.model.card.nenuphar.*;
 
@@ -32,10 +31,12 @@ public class BoardController implements PanelTableController {
     public BoardController() {
         this.commandInvoker = new BoardCommandInvoker();
         this.obss = new ArrayList<>();
-        this.builder = new EasyBuilder();
+        this.builder = new TestBuilder();
         this.director = new Director(builder);
-        director.construir();
+        this.director.construir();
         this.board = builder.getBoard();
+        this.rowSelected = 0;
+        this.columnSelected = 0;
     }
 
     @Override
@@ -125,6 +126,15 @@ public class BoardController implements PanelTableController {
                 && isEquals(board.get(i + 2, j - 2).getClass(), c1, c2)
                 && isEquals(board.get(i + 3, j - 3).getClass(), c1, c2)
                 && isEquals(board.get(i + 4, j - 4).getClass(), c1, c2);
+    }
+
+    private boolean isEquals(Class c, Class... c1) {
+        for (Class classes : c1) {
+            if (c.equals(classes)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isEquals(Class c, Class c1, Class c2) {
@@ -226,6 +236,45 @@ public class BoardController implements PanelTableController {
             return true;
         }
         return false;
+    }
+
+    public boolean checkNFlowers() {
+        int n = 0;
+        for (int i = 0; i < board.getSize(); i++) {
+            for (int j = 0; j < board.getSize(); j++) {
+                if (isEquals(board.get(i, j).getClass(), BrightNenuphar.class, DarkNenuphar.class)) {
+                    n++;
+                }
+            }
+        }
+        return n <= 2;
+    }
+
+    public void afterDraw() {
+        for (int i = 0; i < board.getSize(); i++) {
+            for (int j = 0; j < board.getSize(); j++) {
+                if (board.get(i, j).getClass().equals(BrightNenupharRedFrog.class)) {
+                    board.setBrightNenupharRedFlower(i, j);
+                } else if (board.get(i, j).getClass().equals(BrightNenupharYellowFrog.class)) {
+                    board.setBrightNenupharYellowFlower(i, j);
+                }
+            }
+        }
+        hasRoundWinner();
+    }
+
+    public void drawGameStage02() {
+        if (board.get(rowSelected, columnSelected).getClass().equals(BrightNenuphar.class)) {
+            board.setRedFrog(rowSelected, columnSelected);
+            GameController.getInstance().nextGameFlow();
+        }
+    }
+
+    public void drawGameStage03() {
+        if (board.get(rowSelected, columnSelected).getClass().equals(BrightNenuphar.class)) {
+            board.setYellowFrog(rowSelected, columnSelected);
+            GameController.getInstance().nextGameFlow();
+        }
     }
 
     public void STAGE03() {
@@ -333,7 +382,7 @@ public class BoardController implements PanelTableController {
         Class classe = board.get(rowSelected, columnSelected).getClass();
 
         if (classe.equals(BrightNenuphar.class)) {
-            board.setDarkNenuphar(rowSelected, columnSelected, false);
+            board.setDarkNenuphar(rowSelected, columnSelected);
             GameController.getInstance().nextGameFlow();
             GameController.getInstance().nextGameFlow();
             for (PanelTableObserver obs : obss) {
@@ -341,7 +390,7 @@ public class BoardController implements PanelTableController {
             }
         } else if (classe.equals(BrightNenupharRedFrog.class) || classe.equals(BrightNenupharYellowFrog.class)) {
             lastSelectedCard = board.get(rowSelected, columnSelected);
-            board.setDarkNenuphar(rowSelected, columnSelected, false);
+            board.setDarkNenuphar(rowSelected, columnSelected);
             GameController.getInstance().nextGameFlow();
             for (PanelTableObserver obs : obss) {
                 obs.notifyChangedCards();
@@ -378,20 +427,38 @@ public class BoardController implements PanelTableController {
     public void nextRound() {
         for (int i = 0; i < board.getSize(); i++) {
             for (int j = 0; j < board.getSize(); j++) {
-                if (board.get(i, j).getClass().equals(BrightNenupharRedFlower.class)
-                        || board.get(i, j).getClass().equals(BrightNenupharYellowFlower.class)) {
+                if (isEquals(board.get(i, j).getClass(),
+                        BrightNenupharRedFlower.class,
+                        BrightNenupharYellowFlower.class)) {
                     board.setBrightNenuphar(i, j);
                 }
-                if (board.get(i, j).getClass().equals(DarkNenupharRedFlower.class)
-                        || board.get(i, j).getClass().equals(DarkNenupharYellowFlower.class)
-                        || board.get(i, j).getClass().equals(DarkNenuphar.class)) {
-                    boolean f = ((DarkNenuphar)board.get(i, j)).isFather();
-                    if (f) {
-                        board.setDarkNenuphar(i, j, true);
+                if (isEquals(board.get(i, j).getClass(),
+                        BrightNenuphar.class,
+                        BrightNenupharRedFrog.class,
+                        BrightNenupharYellowFrog.class,
+                        DarkNenuphar.class,
+                        DarkNenupharRedFlower.class,
+                        DarkNenupharYellowFlower.class)) {
+                    if (((Nenuphar) board.get(i, j)).getName().equals(BrightNenupharRedFrog.class)) {
+                        board.setRedFrog(i, j);
+                    } else if (((Nenuphar) board.get(i, j)).getName().equals(BrightNenupharYellowFrog.class)) {
+                        board.setYellowFrog(i, j);
+                    } else if (((Nenuphar) board.get(i, j)).getName().equals(DarkNenuphar.class)) {
+                        board.setDarkNenuphar(i, j);
                     } else {
                         board.setBrightNenuphar(i, j);
                     }
                 }
+                /*if (board.get(i, j).getClass().equals(DarkNenupharRedFlower.class)
+                || board.get(i, j).getClass().equals(DarkNenupharYellowFlower.class)
+                || board.get(i, j).getClass().equals(DarkNenuphar.class)) {
+                boolean f = ((DarkNenuphar) board.get(i, j)).isFather();
+                if (f) {
+                board.setDarkNenuphar(i, j, true);
+                } else {
+                board.setBrightNenuphar(i, j);
+                }
+                }*/
             }
         }
     }

@@ -33,46 +33,74 @@ public class Board {
     }
 
     public void setWater(int row, int column) {
-        cards[row][column] = new Water();
+        if (cards[row][column] == null) {
+            cards[row][column] = new Water(Water.class);
+        } else {
+            cards[row][column] = new Water(((Card) cards[row][column]).getName());
+        }
     }
 
     public void setBrightNenuphar(int row, int column) {
-        cards[row][column] = new BrightNenuphar();
+        if (cards[row][column] == null) {
+            cards[row][column] = new BrightNenuphar(BrightNenuphar.class);
+        } else {
+            cards[row][column] = new BrightNenuphar(((Card) cards[row][column]).getName());
+        }
     }
 
     public void setBrightNenupharRedFlower(int row, int column) {
-        cards[row][column] = new BrightNenupharRedFlower();
+        if (cards[row][column] == null) {
+            cards[row][column] = new BrightNenupharRedFlower(BrightNenupharRedFlower.class);
+        } else {
+            cards[row][column] = new BrightNenupharRedFlower(((Card) cards[row][column]).getName());
+        }
     }
 
     public void setBrightNenupharYellowFlower(int row, int column) {
-        cards[row][column] = new BrightNenupharYellowFlower();
+        if (cards[row][column] == null) {
+            cards[row][column] = new BrightNenupharYellowFlower(BrightNenupharYellowFlower.class);
+        } else {
+            cards[row][column] = new BrightNenupharYellowFlower(((Card) cards[row][column]).getName());
+        }
     }
 
-    public void setDarkNenuphar(int row, int column, boolean father) {
-        cards[row][column] = new DarkNenuphar(father);
+    public void setDarkNenuphar(int row, int column) {
+        if (cards[row][column] == null) {
+            cards[row][column] = new DarkNenuphar(DarkNenuphar.class);
+        } else {
+            cards[row][column] = new DarkNenuphar(((Card) cards[row][column]).getName());
+        }
     }
 
     public void setDarkNenupharYellowFlower(int row, int column) {
         if (cards[row][column] == null) {
-            cards[row][column] = new DarkNenupharYellowFlower(false);
+            cards[row][column] = new DarkNenupharYellowFlower(DarkNenupharYellowFlower.class);
         } else {
-            cards[row][column] = new DarkNenupharYellowFlower(((DarkNenuphar)cards[row][column]).isFather());
+            cards[row][column] = new DarkNenupharYellowFlower(((Card) cards[row][column]).getName());
         }
     }
 
     public void setDarkNenupharRedFlower(int row, int column) {
         if (cards[row][column] == null) {
-            cards[row][column] = new DarkNenupharRedFlower(false);
+            cards[row][column] = new DarkNenupharRedFlower(DarkNenupharRedFlower.class);
         } else {
-            cards[row][column] = new DarkNenupharRedFlower(((DarkNenuphar)cards[row][column]).isFather());
+            cards[row][column] = new DarkNenupharRedFlower(((Card) cards[row][column]).getName());
         }
     }
 
     public void setRedFrog(int row, int column) {
-        cards[row][column] = new BrightNenupharRedFrog();
+        if (cards[row][column] == null) {
+            cards[row][column] = new BrightNenupharRedFrog(BrightNenupharRedFrog.class);
+        } else {
+            cards[row][column] = new BrightNenupharRedFrog(((Card) cards[row][column]).getName());
+        }
     }
 
     public void setYellowFrog(int row, int column) {
-        cards[row][column] = new BrightNenupharYellowFrog();
+        if (cards[row][column] == null) {
+            cards[row][column] = new BrightNenupharYellowFrog(BrightNenupharYellowFrog.class);
+        } else {
+            cards[row][column] = new BrightNenupharYellowFrog(((Card) cards[row][column]).getName());
+        }
     }
 }
