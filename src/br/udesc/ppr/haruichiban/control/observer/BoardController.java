@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import br.udesc.ppr.haruichiban.control.builder.*;
 import br.udesc.ppr.haruichiban.control.command.*;
+import br.udesc.ppr.haruichiban.control.composite.ScoreController;
 import br.udesc.ppr.haruichiban.control.visitor.CountNenupharVisitor;
 import br.udesc.ppr.haruichiban.model.card.*;
 import br.udesc.ppr.haruichiban.model.card.nenuphar.*;
@@ -62,73 +63,6 @@ public class BoardController implements PanelTableController {
         GameController.getInstance().doStage(this);
     }
 
-    private boolean c1(int i, int j, Class c1, Class c2) {
-        return isEquals(board.get(i, j).getClass(), c1, c2)
-                && isEquals(board.get(i, j + 1).getClass(), c1, c2)
-                && isEquals(board.get(i + 1, j).getClass(), c1, c2)
-                && isEquals(board.get(i + 1, j + 1).getClass(), c1, c2);
-    }
-
-    private boolean c21(int i, int j, Class c1, Class c2) {
-        return isEquals(board.get(i, j).getClass(), c1, c2)
-                && isEquals(board.get(i, j + 1).getClass(), c1, c2)
-                && isEquals(board.get(i, j + 2).getClass(), c1, c2)
-                && isEquals(board.get(i, j + 3).getClass(), c1, c2);
-    }
-
-    private boolean c22(int i, int j, Class c1, Class c2) {
-        return isEquals(board.get(i, j).getClass(), c1, c2)
-                && isEquals(board.get(i + 1, j).getClass(), c1, c2)
-                && isEquals(board.get(i + 2, j).getClass(), c1, c2)
-                && isEquals(board.get(i + 3, j).getClass(), c1, c2);
-    }
-
-    private boolean c31(int i, int j, Class c1, Class c2) {
-        return isEquals(board.get(i, j).getClass(), c1, c2)
-                && isEquals(board.get(i + 1, j + 1).getClass(), c1, c2)
-                && isEquals(board.get(i + 2, j + 2).getClass(), c1, c2)
-                && isEquals(board.get(i + 3, j + 3).getClass(), c1, c2);
-    }
-
-    private boolean c32(int i, int j, Class c1, Class c2) {
-        return isEquals(board.get(i, j).getClass(), c1, c2)
-                && isEquals(board.get(i + 1, j - 1).getClass(), c1, c2)
-                && isEquals(board.get(i + 2, j - 2).getClass(), c1, c2)
-                && isEquals(board.get(i + 3, j - 3).getClass(), c1, c2);
-    }
-
-    private boolean c41(int i, int j, Class c1, Class c2) {
-        return isEquals(board.get(i, j).getClass(), c1, c2)
-                && isEquals(board.get(i + 1, j).getClass(), c1, c2)
-                && isEquals(board.get(i + 2, j).getClass(), c1, c2)
-                && isEquals(board.get(i + 3, j).getClass(), c1, c2)
-                && isEquals(board.get(i + 4, j).getClass(), c1, c2);
-    }
-
-    private boolean c42(int i, int j, Class c1, Class c2) {
-        return isEquals(board.get(i, j).getClass(), c1, c2)
-                && isEquals(board.get(i, j + 1).getClass(), c1, c2)
-                && isEquals(board.get(i, j + 2).getClass(), c1, c2)
-                && isEquals(board.get(i, j + 3).getClass(), c1, c2)
-                && isEquals(board.get(i, j + 4).getClass(), c1, c2);
-    }
-
-    private boolean c43(int i, int j, Class c1, Class c2) {
-        return isEquals(board.get(i, j).getClass(), c1, c2)
-                && isEquals(board.get(i + 1, j + 1).getClass(), c1, c2)
-                && isEquals(board.get(i + 2, j + 2).getClass(), c1, c2)
-                && isEquals(board.get(i + 3, j + 3).getClass(), c1, c2)
-                && isEquals(board.get(i + 4, j + 4).getClass(), c1, c2);
-    }
-
-    private boolean c44(int i, int j, Class c1, Class c2) {
-        return isEquals(board.get(i, j).getClass(), c1, c2)
-                && isEquals(board.get(i + 1, j - 1).getClass(), c1, c2)
-                && isEquals(board.get(i + 2, j - 2).getClass(), c1, c2)
-                && isEquals(board.get(i + 3, j - 3).getClass(), c1, c2)
-                && isEquals(board.get(i + 4, j - 4).getClass(), c1, c2);
-    }
-
     private boolean isEquals(Class c, Class... c1) {
         for (Class classes : c1) {
             if (c.equals(classes)) {
@@ -138,101 +72,16 @@ public class BoardController implements PanelTableController {
         return false;
     }
 
-    /*private boolean isEquals(Class c, Class c1, Class c2) {
-    return c.equals(c1) || c.equals(c2);
-    }*/
-
     private boolean hasRoundWinner() {
-        int r = 0;
-        int y = 0;
-        for (int i = 0; i < board.getSize() - 1; i++) {
-            for (int j = 0; j < board.getSize() - 1; j++) {
-                if (c1(i, j, BrightNenupharRedFlower.class, DarkNenupharRedFlower.class)) {
-                    r++;
-                }
-                if (c1(i, j, BrightNenupharYellowFlower.class, DarkNenupharYellowFlower.class)) {
-                    y++;
-                }
-            }
-        }
-        for (int i = 0; i < board.getSize() - 3; i++) {
-            for (int j = 0; j < board.getSize(); j++) {
-                if (c22(i, j, BrightNenupharRedFlower.class, DarkNenupharRedFlower.class)) {
-                    r += 2;
-                }
-                if (c22(i, j, BrightNenupharYellowFlower.class, DarkNenupharYellowFlower.class)) {
-                    y += 2;
-                }
-            }
-        }
-        for (int i = 0; i < board.getSize(); i++) {
-            for (int j = 0; j < board.getSize() - 3; j++) {
-                if (c21(i, j, BrightNenupharRedFlower.class, DarkNenupharRedFlower.class)) {
-                    r += 2;
-                }
-                if (c21(i, j, BrightNenupharYellowFlower.class, DarkNenupharYellowFlower.class)) {
-                    y += 2;
-                }
-            }
-        }
-        for (int i = 0; i < board.getSize() - 3; i++) {
-            for (int j = 0; j < board.getSize() - 3; j++) {
-                System.out.println("i " + i + " j " + j);
-                if (c31(i, j, BrightNenupharRedFlower.class, DarkNenupharRedFlower.class)) {
-                    r += 3;
-                }
-                if (c31(i, j, BrightNenupharYellowFlower.class, DarkNenupharYellowFlower.class)) {
-                    y += 3;
-                }
-            }
-        }
-        System.out.println("-");
-        for (int i = 0; i < board.getSize() - 3; i++) {
-            for (int j = 3; j < board.getSize(); j++) {
-                System.out.println("i " + i + " j " + j);
-                if (c32(i, j, BrightNenupharRedFlower.class, DarkNenupharRedFlower.class)) {
-                    r += 3;
-                }
-                if (c32(i, j, BrightNenupharYellowFlower.class, DarkNenupharYellowFlower.class)) {
-                    y += 3;
-                }
-            }
-        }
-        for (int j = 0; j < board.getSize(); j++) {
-            if (c41(0, j, BrightNenupharRedFlower.class, DarkNenupharRedFlower.class)) {
-                r += 5;
-            }
-            if (c41(0, j, BrightNenupharYellowFlower.class, DarkNenupharYellowFlower.class)) {
-                y += 5;
-            }
-        }
-        for (int i = 0; i < board.getSize(); i++) {
-            if (c42(i, 0, BrightNenupharRedFlower.class, DarkNenupharRedFlower.class)) {
-                r += 5;
-            }
-            if (c42(i, 0, BrightNenupharYellowFlower.class, DarkNenupharYellowFlower.class)) {
-                y += 5;
-            }
-        }
-        if (c43(0, 0, BrightNenupharRedFlower.class, DarkNenupharRedFlower.class)) {
-            r += 5;
-        }
-        if (c43(0, 0, BrightNenupharYellowFlower.class, DarkNenupharYellowFlower.class)) {
-            y += 5;
-        }
-        if (c44(0, 4, BrightNenupharRedFlower.class, DarkNenupharRedFlower.class)) {
-            r += 5;
-        }
-        if (c44(0, 4, BrightNenupharYellowFlower.class, DarkNenupharYellowFlower.class)) {
-            y += 5;
-        }
-
-        if (r != 0 || y != 0) {
-            GameController.getInstance().getPointsController().addRedPoints(r);
-            GameController.getInstance().getPointsController().addYellowPoints(y);
+        ScoreController sc = new ScoreController(board);
+        int[] totalScore = sc.getTotalScore();
+//        System.out.println(totalScore[0] + " - " + totalScore[1]);
+        if (totalScore[0] != 0 || totalScore[1] != 0) {
+            GameController.getInstance().getPointsController().addRedPoints(totalScore[0]);
+            GameController.getInstance().getPointsController().addYellowPoints(totalScore[1]);
             if (GameController.getInstance().getPointsController().hasSingleWinner()) {
                 GameController.getInstance().gameOver();
-            } 
+            }
             GameController.getInstance().nextRound();
             return true;
         }
@@ -244,7 +93,7 @@ public class BoardController implements PanelTableController {
         try {
             board.accept(v);
         } catch (Exception ex) {
-            System.out.println("Error [checkBoard]");
+            System.out.println("Error [checkBoard] [BoardController]");
         }
         return v.getValue() <= num;
     }
