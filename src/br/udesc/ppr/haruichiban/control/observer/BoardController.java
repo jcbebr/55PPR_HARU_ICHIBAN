@@ -5,6 +5,11 @@ import java.util.List;
 import br.udesc.ppr.haruichiban.control.builder.*;
 import br.udesc.ppr.haruichiban.control.command.*;
 import br.udesc.ppr.haruichiban.control.composite.ScoreController;
+import br.udesc.ppr.haruichiban.control.strategy.MoveCardsDownStrategy;
+import br.udesc.ppr.haruichiban.control.strategy.MoveCardsLeftStrategy;
+import br.udesc.ppr.haruichiban.control.strategy.MoveCardsRightStrategy;
+import br.udesc.ppr.haruichiban.control.strategy.MoveCardsStrategy;
+import br.udesc.ppr.haruichiban.control.strategy.MoveCardsUpStrategy;
 import br.udesc.ppr.haruichiban.control.visitor.CountNenupharVisitor;
 import br.udesc.ppr.haruichiban.model.card.*;
 import br.udesc.ppr.haruichiban.model.card.nenuphar.*;
@@ -16,12 +21,24 @@ import br.udesc.ppr.haruichiban.model.card.nenuphar.*;
  */
 public class BoardController implements PanelTableController {
 
+    //BUILDER
     private final Director director;
     private final Builder builder;
     private final Board board;
-
+    //COMMAND
     private final BoardCommandInvoker commandInvoker;
+    //OBSERVER
     private final List<PanelTableObserver> obss;
+    //STRATEGY
+    private MoveCardsStrategy strategy;
+
+    public void setStrategy(MoveCardsStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public void move(int lastSelected) {
+        this.strategy.move(rowSelected, columnSelected, lastSelected, board.getCards());
+    }
 
     private int rowSelected;
     private int columnSelected;
@@ -33,7 +50,7 @@ public class BoardController implements PanelTableController {
     public BoardController() {
         this.commandInvoker = new BoardCommandInvoker();
         this.obss = new ArrayList<>();
-        this.builder = new TestBuilder();
+        this.builder = new EasyBuilder();
         this.director = new Director(builder);
         this.director.construir();
         this.board = builder.getBoard();
@@ -81,8 +98,9 @@ public class BoardController implements PanelTableController {
             GameController.getInstance().getPointsController().addYellowPoints(totalScore[1]);
             if (GameController.getInstance().getPointsController().hasSingleWinner()) {
                 GameController.getInstance().gameOver();
+            } else {
+                GameController.getInstance().nextRound();
             }
-            GameController.getInstance().nextRound();
             return true;
         }
         return false;
@@ -194,21 +212,26 @@ public class BoardController implements PanelTableController {
     }
 
     public void STAGE07() {
+        int lastSelected = 0;
         if (board.get(rowSelected, columnSelected).getClass().equals(SelectionIndicator.class)) {
             if (lastRowSelected == rowSelected) {
                 if (columnSelected > lastColumnSelected) {
-                    commandInvoker.add(new MoveCardsRightCommand(rowSelected, columnSelected, lastColumnSelected, board.getCards()));
+                    this.setStrategy(new MoveCardsRightStrategy());
+                    lastSelected = lastColumnSelected;
                 } else {
-                    commandInvoker.add(new MoveCardsLeftCommand(rowSelected, columnSelected, lastColumnSelected, board.getCards()));
+                    this.setStrategy(new MoveCardsLeftStrategy());
+                    lastSelected = lastColumnSelected;
                 }
             } else if (lastColumnSelected == columnSelected) {
                 if (rowSelected > lastRowSelected) {
-                    commandInvoker.add(new MoveCardsDownCommand(rowSelected, columnSelected, lastRowSelected, board.getCards()));
+                    this.setStrategy(new MoveCardsDownStrategy());
+                    lastSelected = lastRowSelected;
                 } else {
-                    commandInvoker.add(new MoveCardsUpCommand(rowSelected, columnSelected, lastRowSelected, board.getCards()));
+                    this.setStrategy(new MoveCardsUpStrategy());
+                    lastSelected = lastRowSelected;
                 }
             }
-            commandInvoker.execute();
+            this.move(lastSelected);
             for (int i = 0; i < board.getSize(); i++) {
                 for (int j = 0; j < board.getSize(); j++) {
                     if (board.get(i, j).getClass().equals(SelectionIndicator.class)) {

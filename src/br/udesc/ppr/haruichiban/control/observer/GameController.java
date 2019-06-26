@@ -107,9 +107,8 @@ public class GameController implements Observed {
     public void nextRound() {
         setStage(new GameStage01(this));
         redHandController.resetDeck();
-        redHandController.removeGardener();
         yellowHandController.resetDeck();
-        yellowHandController.removeGardener();
+        removeGardener();
         unselectCards();
         boardController.nextRound();
         for (Observer obs : obss) {
@@ -120,6 +119,11 @@ public class GameController implements Observed {
         }
     }
     
+    public void removeGardener() {
+        yellowHandController.removeGardener();
+        redHandController.removeGardener();
+    }
+    
     public void unselectCards(){
         redHandController.unselectCard();
         yellowHandController.unselectCard();
@@ -127,8 +131,13 @@ public class GameController implements Observed {
 
     public void gameOver() {
         setStage(new GameOverStage(this));
+        unselectCards();
+        removeGardener();
         for (Observer obs : obss) {
-            ((MainScreenObserver) obs).notifyGameOver("Fim do jogo, parabéns jogador " + pointsController.getWinner());
+            ((MainScreenObserver) obs).notifyNextRoundStep(stage.getName(), stage.getInfo());
+        }
+        for (Observer obs : obss) {
+            ((MainScreenObserver) obs).notifyGameOver("Fim do jogo, parabÃ©ns jogador " + pointsController.getWinner());
         }
     }
 

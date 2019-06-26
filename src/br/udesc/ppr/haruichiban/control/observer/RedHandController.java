@@ -88,8 +88,7 @@ public class RedHandController implements PanelTableController {
 
     @Override
     public Card getValueAt(int row, int column, boolean selected) {
-        if ((selected) && ((GameController.getInstance().getStage().getClass().equals(GameStage02.class)) 
-                || (GameController.getInstance().getStage().getClass().equals(GameStage01.class))))/*retirar*/{
+        if (selected && GameController.getInstance().getStage().getClass().equals(GameStage02.class)) {
             try {
                 return (Card) deck.getFlowerAt(column);
             } catch (IndexOutOfBoundsException e) {
